@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Biodata Maker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        
+        h2 {
+            text-align: center;
+        }
+        
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        input[type="text"],
+        input[type="date"],
+        input[type="email"],
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+        
+        textarea {
+            height: 100px;
+        }
+        
+        input[type="file"] {
+            margin-bottom: 10px;
+        }
+        
+        input[type="submit"],
+        input[type="button"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        input[type="submit"]:hover,
+        input[type="button"]:hover {
+            background-color: #45a049;
+        }
+        
+        #imagePreview {
+            text-align: center;
+        }
+        
+        #imagePreview img {
+            max-width: 150px;
+            max-height: 150px;
+            margin-top: 10px;
+        }
+        
+        #printButton {
+            display: none;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .biodata-container {
+            margin-top: 20px;
+            border: 1px solid #120000;
+            padding: 10px;
+        }
+        
+        .biodata-container img {
+            max-width: 150px;
+            max-height: 150px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Biodata Maker</h2>
+    <form id="biodataForm" onsubmit="generateBiodata(event)">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+        
+        <label for="dob">Date of Birth:</label>
+        <input type="date" id="dob" name="dob" required>
+        
+        <label for="gender">Gender:</label>
+        <input type="radio" id="male" name="gender" value="Male" required>
+        <label for="male">Male</label>
+        <input type="radio" id="female" name="gender" value="Female" required>
+        <label for="female">Female</label>
+        
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        
+        <label for="phone">Phone:</label>
+        <input type="tel" id="phone" name="phone" pattern="[0-9]{10}" required>
+        
+        <label for="address">Address:</label>
+        <textarea id="address" name="address" required></textarea>
+        
+        <label for="education">Education:</label>
+        <input type="text" id="education" name="education" required>
+        
+        <label for="skills">Skills:</label>
+        <textarea id="skills" name="skills" required></textarea>
+        
+        <label for="photo">Passport Photo:</label>
+        <input type="file" id="photo" name="photo" accept="image/*" required>
+        <div id="imagePreview"></div>
+        
+        <input type="submit" value="Generate Biodata">
+    </form>
+    
+    <div id="printButton">
+        <input type="button" value="Print Biodata" onclick="printBiodata()">
+    </div>
+    
+    <div id="biodataResult"></div>
+    
+    <script>
+        function generateBiodata(event) {
+            event.preventDefault();
+            
+            var name = document.getElementById("name").value;
+            var dob = document.getElementById("dob").value;
+            var gender = document.querySelector('input[name="gender"]:checked').value;
+            var email = document.getElementById("email").value;
+            var phone = document.getElementById("phone").value;
+            var address = document.getElementById("address").value;
+            var education = document.getElementById("education").value;
+            var skills = document.getElementById("skills").value;
+            var photo = document.getElementById("photo").files[0];
+            
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var biodata = "<div class='biodata-container'>" +
+                                "<h2>Biodata</h2>" +
+                                "<img src='" + e.target.result + "' alt='Passport Photo'>" +
+                                "<p><strong>Name:</strong> " + name + "</p>" +
+                                "<p><strong>Date of Birth:</strong> " + dob + "</p>" +
+                                "<p><strong>Gender:</strong> " + gender + "</p>" +
+                                "<p><strong>Email:</strong> " + email + "</p>" +
+                                "<p><strong>Phone:</strong> " + phone + "</p>" +
+                                "<p><strong>Address:</strong> " + address + "</p>" +
+                                "<p><strong>Education:</strong> " + education + "</p>" +
+                                "<p><strong>Skills:</strong> " + skills + "</p>" +
+                             "</div>";
+                             
+                document.getElementById("biodataResult").innerHTML = biodata;
+                document.getElementById("printButton").style.display = "block";
+            };
+            reader.readAsDataURL(photo);
+        }
+        
+        function printBiodata() {
+            var printContents = document.getElementById("biodataResult").innerHTML;
+            var originalContents = document.body.innerHTML;
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.innerHTML = originalContents;
+        }
+        
+        document.getElementById("photo").addEventListener("change", function() {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById("imagePreview").innerHTML = '<img src="' + e.target.result + '" alt="Passport Photo">';
+            };
+            reader.readAsDataURL(this.files[0]);
+        });
+    </script>
+</body>
+</html>
